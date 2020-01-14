@@ -49,7 +49,7 @@ To achieve this you have to inform some kind of verifiable identification, which
 
 We propose that the nodes can choose to receive and broadcast a new type of message.
 
-Participants can comunicate using their Bitcoin addresses and this communication can only happen if a set of rules are met.
+Participants can communicate using their Bitcoin addresses and this communication can only happen if a set of rules are met.
 
 Below are the inner workings of this new message and the rules for it to happen.
 
@@ -57,13 +57,13 @@ Below are the inner workings of this new message and the rules for it to happen.
 
 To allow a participant to exchange messages using this protocol we require that a chosen value remain locked for a set period. This will represent a ''' funding transaction ''' for the address.
 
-<blockquote> It worth noticing that the address is only activated if it have it have a active locking transaction.
+<blockquote> It worth noticing that the address is only activated if it has it have an active locking transaction.
 
 Any message sent to an address that is not activated must be discarded by the receiving node.</blockquote>
 
 The funding transaction must have a time-locked vout [[bip-0065]]
 
-    <expiry time> CHECKLOCKTIMEVERIFY DROP DUP HASH160 <pubKeyHash> EQUALVERIFY CHECKSIG
+ <expiry time> CHECKLOCKTIMEVERIFY DROP DUP HASH160 <pubKeyHash> EQUALVERIFY CHECKSIG
 
 === Messages ===
 
