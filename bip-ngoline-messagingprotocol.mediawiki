@@ -65,30 +65,53 @@ The funding transaction must have a time-locked vout [[bip-0065]]
 
  <expiry time> CHECKLOCKTIMEVERIFY DROP DUP HASH160 <pubKeyHash> EQUALVERIFY CHECKSIG
 
-=== Messages ===
+This is enough to grant the owner of <code><pubKeyHash></code> a valid address for the <code><expiry time></code>.
+
+=== Broadcasting Rules ===
+
+In order to broadcast a message, beeing it a new message or a received message, it has to satisfy the following rules:
+
+# Is this message originaly sent les than '' n* '' minutes ago?
+# Check the recipient's '' funding transaction ''
+## Does it exists?
+## Is it still locked? <code><expiry time> > now '' (block height) ''</code>
+# Check the sender's '' funding transaction ''
+## Does it exists?
+## Is it still locked? <code><expiry time> > now '' (block height) ''</code>
+## Does the <code><expiry time></code> greater or equal than recipient's <code><expiry time></code>
+## Does the value locked greater or equal than that of the recipient?
+
+If the answer to any of those questions is ''' NO ''' the message must be discarded.
+
+If all the answers are ''' YES ''' and you're not the recipient of the message it must be broadcast for all your peers.
+
+'' * The value of ''' n ''' should be decided by the community. ''
+
+=== Message ===
 
 Exchanged messages should pose no overhead for the network or its nodes. With this in mind, a message can only have up to 350 bytes in total.
 
 Following is the proposed message composition:
 
-* message: 350b
-** header: ~94-134b
-*** recipient: ~47-67b 
-**** address: 40b (bech32)
-**** funding block: 1-9b '' (varint) ''
-**** funding txn: 1-9b '' (varint) ''
-**** funding vout: 1-9b '' (varint) ''
-*** recipient: ~47-67b 
-**** address: 40b (bech32)
-**** funding block: 1-9b '' (varint) ''
-**** funding txn: 1-9b '' (varint) ''
-**** funding vout: 1-9b '' (varint) ''
-** body: ~212-252b
-*** message: ~212-252b
-** footer: 4b
-*** crc32: 4b
+* message: 350 bytes
+** header: ~94-134 bytes
+*** sent on: 8 bytes
+*** recipient: ~47-67 bytes
+**** address: 40 bytes (bech32)
+**** funding block: 1-9 bytes '' (varint) ''
+**** funding txn: 1-9 bytes '' (varint) ''
+**** funding vout: 1-9 bytes '' (varint) ''
+*** recipient: ~47-67 bytes
+**** address: 40 bytes (bech32)
+**** funding block: 1-9 bytes '' (varint) ''
+**** funding txn: 1-9 bytes '' (varint) ''
+**** funding vout: 1-9 bytes '' (varint) ''
+** body: ~204-244 bytes
+*** message: ~204-244 bytes
+** footer: 4 bytes
+*** crc32: 4 bytes
 
-----
+==== Message Specifics ====
 
 The header contains data regarding the locking transactions for each participant in the message exchange.
 
@@ -96,24 +119,9 @@ We propose using block height and transaction position inside the block to allow
 
 Considering adoption after block 612800 (varint FE00C05909 = 5 bytes), the message body could range from 212 to 252 bytes depending on the position of the transaction inside the block and the locking vout position.
 
-The flow:
+The <code>sent on</code> field of the message is a Unix timestamp from the sender.
 
-* sender broadcast message;
-** peer receive message;
-** peer check sender funding tx against recipient funding tx
-*** funding nok
-**** discard message
-*** funding ok
-**** peer broadcast message;
-**** peer is recipient
-***** decrypt message
-**** discard message
-
-Funding transactions:
-
-* can only receive messages from people with at least the same value and timelock as me
-** value: n sat
-** timelock: n blocks
+The body's message must be encrypted using the recipient's Public Key.
 
 ==Rationale==
 
