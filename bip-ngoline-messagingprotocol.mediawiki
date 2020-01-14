@@ -1,0 +1,97 @@
+<pre>
+  BIP: ?
+  Layer: Applications
+  Title: Adding Anonymous Messaging to Peers
+  Author: Níckolas Goline <n@ngoline.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:?
+  Status: Draft
+  Type: Standards Track
+  Created: 2020-01-13
+  License: BSD-2-Clause
+</pre>
+
+==Abstract==
+
+This document specifies an adition to current services offered by peers to enable the exchange of anonymous messages using Bitcoin's well stabilished peer-to-peer network.
+
+==Copyright==
+
+This BIP is licensed under the BSD 2-clause license.
+
+==Motivation==
+
+The adition of messaging to the Bitcoin protocol will introduce, not only a wider use for it, but also a secure anonymous layer to exchange messages in.
+
+Today there's no way of exchanging messages using the following three categories at the same time:
+
+#  Security
+#  Anonimity
+#  Spam-free environment
+
+Any known method will fall on a chose-two scenario as follows:
+
+'''Security + Anonimity'''
+
+<blockquote>You can have a '''secure''' environment where '''anonimity''' is taken seriously, but anyone can create an virtually infinite number of accounts, which makes the environment prone to '''spam'''.</blockquote>
+
+'''Security + Spam-Free'''
+
+<blockquote>You can have a s'''ecure''' environment where an individual can only create a set of accounts, making '''spam''' a risky business since you could be banned.
+
+To achieve this you have to inform some kind of verifiable identification, ehich makes the system not '''anonymous'''.</blockquote>
+
+'''Anonimity + Spam-Free'''
+
+<blockquote>I can't think of any type of communication that can offer this, but nonetheless, I would not like to have my messages being open to anyone who wants to read them, nor exposing my physical address to the world.</blockquote>
+
+I believe that the bitcoin network has all that's needed to achieve the holly grail of communication.
+
+==Specification==
+
+A new message type can be exchanged between the peers:
+<code>
+message: 350b
+	- header: ~102b
+		- recipient: ~69b 
+			- address: 42b (bech32)
+			- funding block: 1-9b
+			- funding txn: 1-9b
+			- funding vout: 1-9b
+		- recipient: ~69b 
+			- address: 42b (bech32)
+			- funding block: 1-9b
+			- funding txn: 1-9b
+			- funding vout: 1-9b
+	- body: ~208b
+		- message: ~208b
+	- footer: 4b
+		- crc32: 4b
+</code>
+
+The flow:
+
+<code>
+- sender broadcast message;
+	- peer receive message;
+	- peer check sender funding tx against recipient funding tx
+		- funding nok
+			- discard message
+		- funding ok
+			- peer broadcast message;
+			- peer is recipient
+				- decrypt message
+			- discard message
+</code>
+
+Funding transactions:
+<code>
+- can only receive messages from people with at least same value and timelock as me
+	- value: n sat
+	- timelock: n blocks
+</code>
+
+==Rationale==
+
+
+==Reference implementation==
