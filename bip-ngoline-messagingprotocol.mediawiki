@@ -1,5 +1,5 @@
 <pre>
-  BIP: ?
+  BIP:?
   Layer: Applications
   Title: Adding Anonymous Messaging to Peers
   Author: Níckolas Goline <n@ngoline.com>
@@ -13,7 +13,7 @@
 
 ==Abstract==
 
-This document specifies an adition to current services offered by peers to enable the exchange of anonymous messages using Bitcoin's well stabilished peer-to-peer network.
+This document specifies an addition to current services offered by peers to enable the exchange of anonymous messages using Bitcoin's well established peer-to-peer network.
 
 ==Copyright==
 
@@ -21,77 +21,77 @@ This BIP is licensed under the BSD 2-clause license.
 
 ==Motivation==
 
-The adition of messaging to the Bitcoin protocol will introduce, not only a wider use for it, but also a secure anonymous layer to exchange messages in.
+The addition of messaging to the Bitcoin protocol will introduce, not only a wider use for it but also a secure anonymous layer to exchange messages in.
 
-Today there's no way of exchanging messages using the following three categories at the same time:
+Today there's no way of exchanging messages using all of the following three fundaments at the same time:
 
 #  Security
-#  Anonimity
+#  Anonymity
 #  Spam-free environment
 
 Any known method will fall on a chose-two scenario as follows:
 
-'''Security + Anonimity'''
+===Security + Anonimity===
 
-<blockquote>You can have a '''secure''' environment where '''anonimity''' is taken seriously, but anyone can create an virtually infinite number of accounts, which makes the environment prone to '''spam'''.</blockquote>
+<blockquote>You can have a ''' secure ''' environment where ''' anonimity ''' is taken seriously, but anyone can create a virtually infinite number of accounts, which makes the environment prone to ''' spam '''.</blockquote>
 
-'''Security + Spam-Free'''
+===Security + Spam-Free===
 
-<blockquote>You can have a s'''ecure''' environment where an individual can only create a set of accounts, making '''spam''' a risky business since you could be banned.
+<blockquote>You can have a ''' secure ''' environment where an individual can only create a set of accounts, making ''' spam ''' a risky business since you could be banned from the platform.
 
-To achieve this you have to inform some kind of verifiable identification, ehich makes the system not '''anonymous'''.</blockquote>
+To achieve this you have to inform some kind of verifiable identification, which makes the system, not ''' anonymous '''.</blockquote>
 
-'''Anonimity + Spam-Free'''
+===Anonimity + Spam-Free===
 
-<blockquote>I can't think of any type of communication that can offer this, but nonetheless, I would not like to have my messages being open to anyone who wants to read them, nor exposing my physical address to the world.</blockquote>
-
-I believe that the bitcoin network has all that's needed to achieve the holly grail of communication.
+<blockquote>While I can't think of any type of communication environment that can offer this, I wouldn't like to exchange open messages nor expose my physical address to the world. This kind of environment lacks ''' security ''' and it's not what we're trying to achieve here.</blockquote>
 
 ==Specification==
 
+
 A new message type can be exchanged between the peers:
-<code>
-message: 350b
-	- header: ~102b
-		- recipient: ~69b 
-			- address: 42b (bech32)
-			- funding block: 1-9b
-			- funding txn: 1-9b
-			- funding vout: 1-9b
-		- recipient: ~69b 
-			- address: 42b (bech32)
-			- funding block: 1-9b
-			- funding txn: 1-9b
-			- funding vout: 1-9b
-	- body: ~208b
-		- message: ~208b
-	- footer: 4b
-		- crc32: 4b
-</code>
+
+* message: 350b
+** header: ~102b
+*** recipient: ~69b 
+**** address: 42b (bech32)
+**** funding block: 1-9b
+**** funding txn: 1-9b
+**** funding vout: 1-9b
+*** recipient: ~69b 
+**** address: 42b (bech32)
+**** funding block: 1-9b
+**** funding txn: 1-9b
+**** funding vout: 1-9b
+** body: ~208b
+*** message: ~208b
+** footer: 4b
+*** crc32: 4b
 
 The flow:
 
-<code>
-- sender broadcast message;
-	- peer receive message;
-	- peer check sender funding tx against recipient funding tx
-		- funding nok
-			- discard message
-		- funding ok
-			- peer broadcast message;
-			- peer is recipient
-				- decrypt message
-			- discard message
-</code>
+* sender broadcast message;
+** peer receive message;
+** peer check sender funding tx against recipient funding tx
+*** funding nok
+**** discard message
+*** funding ok
+**** peer broadcast message;
+**** peer is recipient
+***** decrypt message
+**** discard message
 
 Funding transactions:
-<code>
-- can only receive messages from people with at least same value and timelock as me
-	- value: n sat
-	- timelock: n blocks
-</code>
+
+* can only receive messages from people with at least the same value and timelock as me
+** value: n sat
+** timelock: n blocks
 
 ==Rationale==
 
+Current communications always lack at least one of the three fundamentals of a secure, anonymous and spam-free environment.
+
+We can use the Bitcoin protocol to perform secure and anonymous communication with almost no overhead for the nodes while also achieving the holy grail of communications having a virtually spam-free (or at least very expensive for spammers) environment.
 
 ==Reference implementation==
+
+TBD
