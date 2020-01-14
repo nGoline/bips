@@ -1,71 +1,100 @@
 <pre>
-  BIP:?
-  Layer: Applications
-  Title: Adding Anonymous Messaging to Peers
-  Author: Níckolas Goline <n@ngoline.com>
-  Comments-Summary: No comments yet.
-  Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:?
-  Status: Draft
-  Type: Standards Track
-  Created: 2020-01-13
-  License: BSD-2-Clause
+ BIP:?
+ Layer: Applications
+ Title: Adding Anonymous Messaging to Peers
+ Author: Níckolas Goline <n@ngoline.com>
+ Comments-Summary: No comments yet.
+ Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:?
+ Status: Draft
+ Type: Standards Track
+ Created: 2020-01-13
+ License: BSD-2-Clause
 </pre>
 
-==Abstract==
+== Abstract ==
 
 This document specifies an addition to current services offered by peers to enable the exchange of anonymous messages using Bitcoin's well established peer-to-peer network.
 
-==Copyright==
+== Copyright ==
 
 This BIP is licensed under the BSD 2-clause license.
 
-==Motivation==
+== Motivation ==
 
 The addition of messaging to the Bitcoin protocol will introduce, not only a wider use for it but also a secure anonymous layer to exchange messages in.
 
 Today there's no way of exchanging messages using all of the following three fundaments at the same time:
 
-#  Security
-#  Anonymity
-#  Spam-free environment
+# Security
+# Anonymity
+# Spam-free environment
 
 Any known method will fall on a chose-two scenario as follows:
 
-===Security + Anonimity===
+=== Security + Anonymity ===
 
-<blockquote>You can have a ''' secure ''' environment where ''' anonimity ''' is taken seriously, but anyone can create a virtually infinite number of accounts, which makes the environment prone to ''' spam '''.</blockquote>
+<blockquote>One can have a ''' secure ''' environment where ''' anonimity ''' is taken seriously, but anyone can create a virtually infinite number of accounts, which makes the environment prone to ''' spam '''.</blockquote>
 
-===Security + Spam-Free===
+=== Security + Spam-Free ===
 
-<blockquote>You can have a ''' secure ''' environment where an individual can only create a set of accounts, making ''' spam ''' a risky business since you could be banned from the platform.
+<blockquote>One can have a ''' secure ''' environment where an individual can only create a set of accounts, making ''' spam ''' a risky business since you could be banned from the platform.
 
 To achieve this you have to inform some kind of verifiable identification, which makes the system, not ''' anonymous '''.</blockquote>
 
-===Anonimity + Spam-Free===
+=== Anonimity + Spam-Free ===
 
-<blockquote>While I can't think of any type of communication environment that can offer this, I wouldn't like to exchange open messages nor expose my physical address to the world. This kind of environment lacks ''' security ''' and it's not what we're trying to achieve here.</blockquote>
+<blockquote>While we can't think of any type of communication environment that can offer this, we wouldn't like to exchange open messages nor expose my physical address to the world. This kind of environment lacks ''' security ''' and it's not what we're trying to achieve here.</blockquote>
 
-==Specification==
+== Specification ==
 
+We propose that the nodes can choose to receive and broadcast a new type of message.
 
-A new message type can be exchanged between the peers:
+Participants can comunicate using their Bitcoin addresses and this communication can only happen if a set of rules are met.
+
+Below are the inner workings of this new message and the rules for it to happen.
+
+=== Funding Transaction ===
+
+To allow a participant to exchange messages using this protocol we require that a chosen value remain locked for a set period. This will represent a ''' funding transaction ''' for the address.
+
+<blockquote> It worth noticing that the address is only activated if it have it have a active locking transaction.
+
+Any message sent to an address that is not activated must be discarded by the receiving node.</blockquote>
+
+The funding transaction must have a time-locked vout [[bip-0065]]
+
+    <expiry time> CHECKLOCKTIMEVERIFY DROP DUP HASH160 <pubKeyHash> EQUALVERIFY CHECKSIG
+
+=== Messages ===
+
+Exchanged messages should pose no overhead for the network or its nodes. With this in mind, a message can only have up to 350 bytes in total.
+
+Following is the proposed message composition:
 
 * message: 350b
-** header: ~102b
-*** recipient: ~69b 
-**** address: 42b (bech32)
-**** funding block: 1-9b
-**** funding txn: 1-9b
-**** funding vout: 1-9b
-*** recipient: ~69b 
-**** address: 42b (bech32)
-**** funding block: 1-9b
-**** funding txn: 1-9b
-**** funding vout: 1-9b
-** body: ~208b
-*** message: ~208b
+** header: ~94-134b
+*** recipient: ~47-67b 
+**** address: 40b (bech32)
+**** funding block: 1-9b '' (varint) ''
+**** funding txn: 1-9b '' (varint) ''
+**** funding vout: 1-9b '' (varint) ''
+*** recipient: ~47-67b 
+**** address: 40b (bech32)
+**** funding block: 1-9b '' (varint) ''
+**** funding txn: 1-9b '' (varint) ''
+**** funding vout: 1-9b '' (varint) ''
+** body: ~212-252b
+*** message: ~212-252b
 ** footer: 4b
 *** crc32: 4b
+
+----
+
+The header contains data regarding the locking transactions for each participant in the message exchange.
+
+We propose using block height and transaction position inside the block to allow for a smaller header.
+
+Considering adoption after block 612800 (varint FE00C05909 = 5 bytes), the message body could range from 212 to 252 bytes depending on the position of the transaction inside the block and the locking vout position.
 
 The flow:
 
