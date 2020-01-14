@@ -57,7 +57,7 @@ Below are the inner workings of this new message and the rules for it to happen.
 
 To allow a participant to exchange messages using this protocol we require that a chosen value remain locked for a set period. This will represent a ''' funding transaction ''' for the address.
 
-<blockquote> It worth noticing that the address is only activated if it has it have an active locking transaction.
+<blockquote> It worth noticing that the address is only activated if it has an active locking transaction.
 
 Any message sent to an address that is not activated must be discarded by the receiving node.</blockquote>
 
@@ -71,21 +71,21 @@ This is enough to grant the owner of <code><pubKeyHash></code> a valid address f
 
 In order to broadcast a message, beeing it a new message or a received message, it has to satisfy the following rules:
 
-# Is this message originaly sent les than '' n* '' minutes ago?
+# Is this message originaly sent less than '' n* '' minutes ago?
 # Check the recipient's '' funding transaction ''
 ## Does it exists?
 ## Is it still locked? <code><expiry time> > now '' (block height) ''</code>
 # Check the sender's '' funding transaction ''
 ## Does it exists?
 ## Is it still locked? <code><expiry time> > now '' (block height) ''</code>
-## Does the <code><expiry time></code> greater or equal than recipient's <code><expiry time></code>
-## Does the value locked greater or equal than that of the recipient?
+## Is the <code><expiry time></code> greater or equal than recipient's <code><expiry time></code>
+## Is the value locked greater or equal than that of the recipient?
 
 If the answer to any of those questions is ''' NO ''' the message must be discarded.
 
-If all the answers are ''' YES ''' and you're not the recipient of the message it must be broadcast for all your peers.
+If all the answers are ''' YES ''' and you're not the recipient of the message you must broadcast it for all your peers.
 
-'' * The value of ''' n ''' should be decided by the community. ''
+'' * The value of ''' n ''' should be decided by the community but anything bigger than the average block time should be avoided.''
 
 === Message ===
 
