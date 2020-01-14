@@ -61,7 +61,7 @@ To allow a participant to exchange messages using this protocol we require that 
 
 Any message sent to an address that is not activated must be discarded by the receiving node.</blockquote>
 
-The funding transaction must have a time-locked vout [[bip-0065]]
+The funding transaction must have a time-locked vout [[bip-0065.mediawiki]].
 
  <expiry time> CHECKLOCKTIMEVERIFY DROP DUP HASH160 <pubKeyHash> EQUALVERIFY CHECKSIG
 
