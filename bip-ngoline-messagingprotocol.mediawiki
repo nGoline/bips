@@ -106,10 +106,10 @@ Following is the proposed message composition:
 **** funding block: 1-9 bytes '' (varint) ''
 **** funding txn: 1-9 bytes '' (varint) ''
 **** funding vout: 1-9 bytes '' (varint) ''
-** body: ~204-244 bytes
-*** message: ~204-244 bytes
-** footer: 4 bytes
-*** crc32: 4 bytes
+** body: ~164-204 bytes
+*** message: ~164-204 bytes
+** footer: 44 bytes
+*** signature: 44 bytes
 
 ==== Message Specifics ====
 
@@ -117,7 +117,7 @@ The header contains data regarding the locking transactions for each participant
 
 We propose using block height and transaction position inside the block to allow for a smaller header.
 
-Considering adoption after block 612800 (varint FE00C05909 = 5 bytes), the message body could range from 212 to 252 bytes depending on the position of the transaction inside the block and the locking vout position.
+Considering adoption after block 612800 (varint FE00C05909 = 5 bytes), the message body could range from 164 to 204 bytes depending on the position of the transaction inside the block and the locking vout position.
 
 The <code>sent on</code> field of the message is a Unix timestamp from the sender.
 
