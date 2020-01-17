@@ -72,6 +72,7 @@ This is enough to grant the owner of <code><pubKeyHash></code> a valid address f
 In order to broadcast a message, beeing it a new message or a received message, it has to satisfy the following rules:
 
 # Is this message originaly sent less than '' n* '' minutes ago?
+# Is the message's signature valid?
 # Check the recipient's '' funding transaction ''
 ## Does it exists?
 ## Is it still locked? <code><expiry time> > now '' (block height) ''</code>
